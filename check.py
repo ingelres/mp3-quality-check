@@ -144,6 +144,7 @@ while len(stack) != 0:
         if os.path.isdir(filename):
             stack.append(filename)
 
+            # Skip directories that contain multiple discs
             if os.path.split(filename)[1].startswith('Disc '):
                 skip = True
 
