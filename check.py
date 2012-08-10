@@ -50,26 +50,23 @@ def checkFiles(directory, files, strictMode):
 
             continue
 
-        (name, ext) = os.path.splitext(file)
-
         # Except 'cover.jpg', only .mp3 files are allowed
-        if ext != '.mp3':
+        if not file.endswith('.mp3'):
             notMP3 = True
             continue
 
         # Check the bitrate
         try:
-            audio         = eyeD3.Mp3AudioFile(path)
-            mode, bitrate = audio.getBitRate()
+            mode, bitrate = eyeD3.Mp3AudioFile(path).getBitRate()
 
             if strictMode:
-                if mode != 0 and bitrate < 320:
+                if mode != 0 or bitrate < 320:
                     lowBitrateMP3 = True
-                else:
-                    if mode == 0 and bitrate < MIN_CBR:
-                        lowBitrateMP3 = True
-                    elif mode == 1 and bitrate < MIN_VBR:
-                        nbLowVBRMP3 += 1
+            else:
+                if mode == 0 and bitrate < MIN_CBR:
+                    lowBitrateMP3 = True
+                elif mode == 1 and bitrate < MIN_VBR:
+                    nbLowVBRMP3 += 1
 
         except:
             invalidMP3 = True
@@ -158,5 +155,6 @@ while len(stack) != 0:
 
 
 print
-print 'Found %u problems' % nbProblems
+if nbProblems != 0: print 'Found %u problems' % nbProblems
+else:               print 'Wow, perfect!'
 print
